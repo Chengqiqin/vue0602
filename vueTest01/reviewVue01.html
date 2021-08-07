@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app">
+  <p>{{message}}</p>
+  <!--数组-->
+  <ul>
+    <li v-for="array in arrays">{{array}}</li>
+  </ul>
+  <!--设置输入并运用侦听器监听输入是否为数字-->
+  <p>
+    <input v-model.lazy="inputs" placeholder="please input a number">
+    <label>{{message}}</label>
+  </p>
+
+  <!--v-if切换登录类型,用 key 管理可复用的元素-->
+  <!--<p>
+    <template v-if=" count % 2 === 0">
+      <label>UserName:</label>
+      <input placeholder="input your username" key="username">
+    </template>
+    <template v-else>
+      <label>Email:</label>
+      <input placeholder="input your email" key="email">
+    </template>
+  </p>-->
+  <!-- 通过组件来代替常规html -->
+  <login :count="count"></login>
+  <!--  <button v-on:click="count++">change login type</button>-->
+  <!--  父级组件通过v-on 监听子组件实例的任意自定义事件 如add-count ，子组件可以通过调用内建的$emit('事件名') 来触发一个事件： -->
+  <component-a v-on:add-count="add"></component-a>
+  <!--遍历数组去得到一个多选   需要用key管理可复用的函数-->
+  <!--  <div v-for="(name,index) in names" :key="index">
+      <input type="checkbox" :id="name.id" :value="name.value" v-model="selectedNames" >
+      <label for="name.id">{{name.value}}</label>
+  </div>-->
+  <!--遍历数组去得到一个多选   需要用key管理可复用的函数-->
+  <!--<div v-for="(name,index) in names">
+    <input type="radio" :id="name.id" :value="name.value" v-model="selectedNames" key="index">
+    <label for="name.id">{{name.value}}</label>
+  </div>-->
+  <comp-b v-bind:radios="names" v-model="selectedNames"></comp-b>
+  <p>{{selectedNames}}</p>
+  <comp-c v-bind:radios="names" v-model="radioName"><i class="iconfont lg-boy"></i></comp-c>
+  <p>{{radioName}}</p>
+</div>
+<script src="../js/vue.js"></script>
+<script>
+  <!-- 全局注册的组件 -->
+  Vue.component('login',{
+    props:['count'],
+    template:`<div class="login">
+    <p>
+      <template v-if=" count % 2 === 0">
+        <label>UserName:</label>
+        <input placeholder="input your username" key="username">
+      </template>
+      <template v-else>
+        <label>Email:</label>
+        <input placeholder="input your email" key="email">
+      </template>
+    </p>
+    </div>
+    `
+  });
+  var componentA ={
+    template: '<button v-on:click="$emit(\'add-count\')">change login type</button>'
+  };
+  var compB = {
+    name: 'comp-b',
+    model:{
+      prop:'selectedValue',
+      event:'change'
+    },
+    props: { // 组件参数
+      selectedValue: Array,
+      radios: Array
+    },
+    data() {
+      return {
+        checkedVal: this.selectedValue, // 用来存储选中的数据
+      }
+    },
+    watch: { // 监听数据变化，回传数据到父组件
+      checkedVal(newValue, oldValue) {
+        if (newValue != oldValue) {
+          this.$emit('change', newValue)
+        }
+      }
+    },
+    template:`
+      <div class="comp-b">
+      <div v-for="(name,index) in radios">
+        <input type="checkbox"
+               :id="name.id"
+               :value="name.value"
+               v-model="checkedVal"
+               key="index">
+        <label for="name.id">{{name.value}}</label>
+        </div>
+      </div>
+    `
+  };
+  var compC = {
+    name: 'comp-c',
+    model:{
+      prop:'selectedValue',
+      event:'change'
+    },
+    props: { // 组件参数
+      selectedValue: String,
+      radios: Array
+    },
+    data() {
+      return {
+        checkedVal: this.selectedValue, // 用来存储选中的数据
+      }
+    },
+    watch: { // 监听数据变化，回传数据到父组件
+      checkedVal(newValue, oldValue) {
+        if (newValue != oldValue) {
+          this.$emit('change', newValue)
+        }
+      }
+    },
+    template:`
+      <div class="comp-c">
+      <div v-for="(name,index) in radios">
+        <input type="radio"
+               :id="name.id"
+               :value="name.value"
+               v-model="checkedVal"
+               key="index">
+        <label for="name.id">{{name.value}}</label>
+        <slot></slot>
+        </div>
+      </div>
+    `
+  }
+  new Vue({
+    el:'#app',
+    data:{
+      message:'hello Vue!',
+      arrays:['China','Canada'],
+      inputs:'',
+      count:0,
+      names:[
+        {id:'tom',value:'Tom'},
+        {id:'jack',value:'Jack'}
+      ],
+      selectedNames:[],
+      radioName:''
+    },
+    watch:{
+      inputs:function (){
+        this.message= !isNaN(Number(this.inputs))?'√':'please input a number'
+      }
+    },
+    methods:{
+      verify:function(){
+        if(!isNaN(Number(this.inputs))){
+          this.message = '√';
+        }else{
+          this.message= 'please input a number';
+        }
+      },
+      add:function (){
+        this.count++;
+      }
+    },
+    components:{
+      'component-a':componentA,
+      compB,
+      compC
+    }
+  })
+</script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>插槽和动态组件</title>
+</head>
+<body>
+<div id="component-Demo">
+    <alert-box>Something bad happened.</alert-box>
+    <button v-for="tab in tabs" v-bind:key="tab" v-on:click="currentTab = tab">{{tab}}</button>
+    <component v-bind:is="currentTabComponent"></component>
+</div>
+<script src="../js/vue.js"></script>
+<script>
+    Vue.component('alert-box', {
+        template: '<div class="alert-box">' +
+            '<strong>Error!</strong>' +
+            '<slot></slot>' +
+            '</div>'
+    })
+    Vue.component('tab-A',{
+        template:'<div>A</div>'
+    });
+    Vue.component('tab-B',{
+        template:'<div>B</div>'
+    });
+    Vue.component('tab-C',{
+        template:'<div>C</div>'
+    });
+    new Vue({
+        el:'#component-Demo',
+        data:{
+            tabs:['A','B','C'],
+            currentTab:'A'
+        },
+        computed:{
+            currentTabComponent:function (){
+                return 'tab-'+this.currentTab
+            }
+        }
+    })
+</script>
+
+</body>
+</html>

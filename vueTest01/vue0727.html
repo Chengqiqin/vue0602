@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>login</title>
+</head>
+<body>
+<div id="appinput">
+    <p>input your phone number:<input v-model="input"><label v-if="seen">{{message}}</label></p>
+    <select v-model="selected" multiple>
+        <option v-for="option in options" v-bind:value="option.value">
+            {{ option.text }}
+        </option>
+    </select>
+    <p>{{selected}}</p>
+
+</div>
+<script src="../js/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.13.1/lodash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+
+<script>
+    const  app = new Vue({
+        el:'#appinput',
+        data:{//定义数据
+            selected:[],
+            options: [
+                { text: 'One', value: 'A' },
+                { text: 'Two', value: 'B' },
+                { text: 'Three', value: 'C' }
+            ],
+            input:'',
+            message:'please input 11 numbers',
+            seen:false,
+        },
+        watch:{
+            input:function(newInput, oldInput) {
+                this.message='please input 11 numbers'
+                this.debouncedGetAnswer()
+            }
+        },
+        created: function () {
+            // `_.debounce` 是一个通过 Lodash 限制操作频率的函数。
+            // 在这个例子中，我们希望限制访问 yesno.wtf/api 的频率
+            // AJAX 请求直到用户输入完毕才会发出。想要了解更多关于
+            // `_.debounce` 函数 (及其近亲 `_.throttle`) 的知识，
+            // 请参考：https://lodash.com/docs#debounce
+            this.debouncedGetAnswer = _.debounce(this.getAnswer, 500)
+        },
+        methods:{
+            getAnswer:function (){
+                this.seen=true;
+                console.log(this.input.length + " "+typeof this.input);
+                if(this.input.length !=11){
+                    this.message='must input 11 numbers';
+                }else if(!isNaN(Number(this.input))){
+                    this.message='√';
+                }else{
+                    this.message='must input 11 numbers';
+                }
+            }
+        }
+    })
+</script>
+</body>
+</html>

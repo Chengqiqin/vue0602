@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>监听子组件事件</title>
+</head>
+<body>
+<div id="demo02">
+    <div :style="{fontSize: textSize + 'em'}">
+        <div-com v-on:enlarge-text="textSize += 0.1" v-on:enlarge="onEnlarge"></div-com>
+    </div>
+</div>
+<script src="../js/vue.js"></script>
+<script>
+  Vue.component('div-com',{
+    data:function (){
+      return {
+        selectedRadio:''
+      }
+    },
+
+    template:'<div class="div-com">' +
+        '<button v-on:click="$emit(\'enlarge-text\')">放大字号</button> ' +
+        '<button v-on:click="$emit(\'enlarge\',0.1)">放大字号function</button> ' +
+        '<input type="radio" id="tom" value="Tom">' +
+        '<label for="tom">Tom</label>' +
+        '<br>' +
+        '<span>{{selectedRadio}} selected.</span>' +
+        '</div>'
+  })
+  new Vue({
+      el:'#demo02',
+      data:{
+          textSize:1
+      },
+      methods:{
+          onEnlarge:function (enlargeAmount){
+              this.textSize += enlargeAmount
+          }
+      }
+  })
+</script>
+</body>
+</html>

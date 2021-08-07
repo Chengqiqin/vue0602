@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>test</title>
+</head>
+<body>
+<div id="comp">
+  <button-comp></button-comp>
+    <div :style="{ fontSize: radioFontSize + 'em' }">
+      <radio-test v-on:enlarge-text="radioFontSize += 0.1" v-on:ensmall="radioFontSize -= 0.1"></radio-test>
+    </div>
+</div>
+<script src="../js/vue.js"></script>
+<script>
+  Vue.component('button-comp',{
+    data:function (){
+      return {
+        count:0
+      }
+    },
+    template: '<button v-on:click="count++">{{count}} times.</button>'
+  })
+  Vue.component('radio-test',{
+    data:function (){
+      return {
+        selected:'',
+        isSelected:'false'
+      }
+    },
+    template: '<div class="radio-test">' +
+        '<button v-on:click="$emit(\'enlarge-text\')">Enlarge text</button>'+
+        '<button v-on:click="$emit(\'ensmall\')">Ensmall text</button>'+
+        '<input type="radio" v-model="selected" placeholder="please input userid" id="tom" value="Tom">' +
+        '<label for="tom">Tom</label>' +
+        '<p>{{selected}} selected.</p>' +
+        '</div>'
+  })
+  new Vue({
+    el:'#comp',
+     data:{
+         radioFontSize:1
+     }
+  })
+</script>
+</body>
+</html>

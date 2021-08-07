@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>全局注册</title>
+</head>
+<body>
+<div id="div-com">
+    <div-com-b></div-com-b>
+    <bootstrap-date-input data-date-picker="activated" v-model="dateToday" class="date-picker-theme-dark"></bootstrap-date-input>
+  <base-input
+          label="Username:"
+          v-model="username"
+          placeholder="Enter your username"
+  ></base-input>
+    <input type="date" class="form-control" data-date-picker="actived" v-model="dateToday">
+</div>
+<script src="../js/vue.js"></script>
+<script>
+  Vue.component('base-input', {
+    inheritAttrs: false,
+    props:{
+      label:String,
+      value:{
+          Number,
+          default:0
+      }
+    },
+    template: `
+    <label>
+      {{ label }}
+      <input
+        v-bind:value="value"
+        v-on:input="$emit('input', $event.target.value)"
+        type="number"
+      >
+    </label>
+  `
+  });
+  Vue.component('bootstrap-date-input',{
+      props: ['value'],
+      template:`<div class="bootstrap-date-input" ><input type="date" class="form-control" v-bind:value="value" v-on:input="$emit('input', $event.target.value)">
+      <label>{{value.toString()}}</label></div>`
+  });
+    Vue.component('div-com-a',{
+      template:'<label>A</label>'
+    });
+    Vue.component('div-com-b',{
+      template:'<div-com-a></div-com-a>'/*直接使用*/
+    });
+    new Vue({
+      el:'#div-com',
+      data:{
+        username:Number,
+          dateToday:Date
+      }
+    })
+</script>
+</body>
+</html>
