@@ -43,10 +43,11 @@
     <input type="radio" :id="name.id" :value="name.value" v-model="selectedNames" key="index">
     <label for="name.id">{{name.value}}</label>
   </div>-->
+  <!-- 利用组件实现checkbox v-model -->
   <comp-b v-bind:radios="names" v-model="selectedNames"></comp-b>
-  <p>{{selectedNames}}</p>
+  <!-- 利用组件实现radio v-model -->
   <comp-c v-bind:radios="names" v-model="radioName"><i class="iconfont lg-boy"></i></comp-c>
-  <p>{{radioName}}</p>
+
 </div>
 <script src="../js/vue.js"></script>
 <script>
@@ -102,6 +103,7 @@
                key="index">
         <label for="name.id">{{name.value}}</label>
         </div>
+      <p>{{selectedValue}}</p>
       </div>
     `
   };
@@ -129,15 +131,16 @@
     },
     template:`
       <div class="comp-c">
-      <div v-for="(name,index) in radios">
-        <input type="radio"
-               :id="name.id"
-               :value="name.value"
-               v-model="checkedVal"
-               key="index">
-        <label for="name.id">{{name.value}}</label>
-        <slot></slot>
+        <div v-for="(name,index) in radios">
+          <input type="radio"
+                 :id="name.id"
+                 :value="name.value"
+                 v-model="checkedVal"
+                 key="index">
+          <label for="name.id">{{name.value}}</label>
+          <slot></slot>
         </div>
+        <p>{{selectedValue}}</p>
       </div>
     `
   }
